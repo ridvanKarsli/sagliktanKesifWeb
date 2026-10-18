@@ -8,6 +8,8 @@ export interface DiscoveryCandidate {
   direction: string;
   genes?: string[];
   mechanism?: string;
+  genetic_target?: string;
+  network_target?: string;
   justification: string;
 }
 
@@ -23,4 +25,6 @@ export interface DiscoverySummary {
   verdict?: string;
   target_classes?: { gene: string; n: number; drugs: string[] }[];
   new_candidates?: DiscoveryCandidate[];
+  confidence?: import('./disease').MethodConfidence;
+  fusion?: string;
 }

@@ -83,7 +83,7 @@ export function CandidateTable({
               <td className="num col-expert">{r.max_phase != null ? String(Number(r.max_phase)) : ''}</td>
               <td>
                 <Meter score={num(r.score)} max={maxScore} />
-                <span className="sub">{num(r.score).toFixed(1)}</span>
+                <span className="sub">{num(r.score) < 1 ? num(r.score).toFixed(3) : num(r.score).toFixed(1)}</span>
                 <div className="sub">
                   lit {num(r.lit_score).toFixed(0)} · hedef {num(r.mech_score).toFixed(0)}
                   {pen < 1 ? ` · ceza ×${pen.toFixed(2)}` : ''}

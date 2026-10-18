@@ -1,7 +1,7 @@
 import { useEvidence, useIndications } from './hooks';
 import { HarmTag } from './HarmTag';
 import { Drawer, Tag } from '@/shared/ui';
-import { DIR_TITLE, DURUM, HARM, KIND, STATUS, TR } from '@/shared/lib/labels';
+import { DIR_TITLE, DURUM, FUSION_NAME, HARM, KIND, STATUS, TR } from '@/shared/lib/labels';
 import { COMPOUND, PUBMED, num } from '@/shared/lib/format';
 import { errorMessage } from '@/shared/api/errors';
 import type { Candidate, DiseaseDetail, EvidenceLink } from '@/entities';
@@ -23,6 +23,12 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
   const extraStr = (k: string) => (typeof row.extra[k] === 'string' ? (row.extra[k] as string) : '');
   const extraNum = (k: string) => (typeof row.extra[k] === 'number' ? (row.extra[k] as number) : null);
   const pen = num(row.penalty || 1);
+  const fusion = extraStr('fusion') || 'base';
+  const methodScore = extraNum('method_score') ?? num(row.score);
+  const nChannels = extraNum('n_channels');
+  const geneticTarget = extraStr('genetic_target');
+  const networkTarget = extraStr('network_target');
+  const biology = extraNum('biology_score');
   const links = ev.data || [];
   const warnings: string[] = [];
   if (num(row.lit_score) === 0 && num(row.mech_score) > 0)
@@ -71,9 +77,18 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
       <div className="summary">
         <b>Bağlantı gücü</b>
         <span>
-          {num(row.score).toFixed(1)} = (literatür {num(row.lit_score).toFixed(1)} + mekanizma{' '}
+          {methodScore.toFixed(1)} = (literatür {num(row.lit_score).toFixed(1)} + mekanizma{' '}
           {num(row.mech_score).toFixed(1)}){pen < 1 ? ` × ${pen.toFixed(2)} güvenlik cezası` : ''}
         </span>
+        {fusion !== 'base' && (
+          <>
+            <b>Sıralama puanı</b>
+            <span>
+              {num(row.score).toFixed(4)} · {FUSION_NAME[fusion] || fusion}
+              {nChannels != null ? `, ${nChannels} kanalda kanıt` : ''}
+            </span>
+          </>
+        )}
         <b>Durum</b>
         <span>
           {stext}
@@ -116,6 +131,32 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
           </ul>
         </div>
       )}
+      <div className="indic">
+        <b>Bağımsız kanıt (literatür dışı)</b>
+        {!geneticTarget && !networkTarget && !biology ? (
+          <span className="sub">
+            {d.status.has_evidence
+              ? 'İlacın hedefleri için genetik ilişki ya da protein ağında yakınlık bulunamadı.'
+              : 'Bu hastalık için bağımsız kanıt adımı henüz çalışmadı.'}
+          </span>
+        ) : (
+          <ul className="indep">
+            {geneticTarget && (
+              <li>
+                Genetik ilişki: hedef <b className="inline">{geneticTarget.split(' ')[0]}</b> hastalıkla genetik olarak
+                ilişkili (skor {geneticTarget.split(' ')[1]}).
+              </li>
+            )}
+            {networkTarget && (
+              <li>
+                Protein ağı: hedef <b className="inline">{networkTarget.split(' ')[0]}</b> hastalık genlerine rastgele
+                beklenenden yakın ({networkTarget.split(' ')[1]}).
+              </li>
+            )}
+            {!!biology && <li>Hayvan modeli / gen ifadesi / yolak kanıtı: {biology.toFixed(2)}</li>}
+          </ul>
+        )}
+      </div>
       {row.chembl_id && (
         <div className="indic">
           <b>Bugün ne için kullanılıyor / deneniyor</b>

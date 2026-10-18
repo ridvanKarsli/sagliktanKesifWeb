@@ -96,6 +96,7 @@ export interface Bridge {
 
 export interface BacktestMetric {
   auc: number;
+  ap?: number;
   hits_at_10: number;
   hits_at_25: number;
   hits_at_50: number;
@@ -106,6 +107,7 @@ export interface BacktestScheme {
   note?: string;
   positives_all?: string[];
   random_expected_hits?: { at_10: number; at_25: number; at_50: number };
+  random_expected_ap?: number;
   metrics?: Record<string, BacktestMetric>;
   positives?: { drug: string; method_rank?: number | null; frequency_rank: number }[];
 }
@@ -114,6 +116,7 @@ export interface Backtest {
   n_a_before?: number;
   n_a_after?: number;
   primary_scheme?: string;
+  channels?: string[];
   schemes?: Record<string, BacktestScheme>;
 }
 

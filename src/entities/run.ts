@@ -1,4 +1,5 @@
-export type AnalysisStep = 'fetch' | 'drugs' | 'labels' | 'tune' | 'rank' | 'backtest' | 'novelty' | 'report';
+export type AnalysisStep =
+  'fetch' | 'drugs' | 'labels' | 'evidence' | 'tune' | 'rank' | 'backtest' | 'novelty' | 'report';
 export type RunStatus = 'queued' | 'running' | 'done' | 'failed' | 'cancelled';
 
 export interface RunProgress {

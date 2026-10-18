@@ -5,7 +5,12 @@ export const STEPS: { key: AnalysisStep; name: string; sub: string }[] = [
   { key: 'fetch', name: 'Makaleleri indir', sub: 'hastalık ve gen makaleleri' },
   { key: 'drugs', name: 'İlaç sözlüğü', sub: 'klinik aşamadaki ilaçların sözlüğü (bir kez)' },
   { key: 'labels', name: 'Doğrulama verileri', sub: 'Tedavi odaklı makaleler ve klinik çalışma kayıtları' },
-  { key: 'rank', name: 'Sıralama', sub: 'Adaylar gen bağlantısı ve hedef kaydına göre puanlanır' },
+  {
+    key: 'evidence',
+    name: 'Bağımsız kanıt',
+    sub: 'Hedeflerin genetik ilişkisi ve protein ağında hastalık genlerine yakınlığı (literatürden bağımsız)',
+  },
+  { key: 'rank', name: 'Sıralama', sub: 'Kanıt kanalları ölçümle doğrulanmış yöntemle birleştirilir' },
   { key: 'backtest', name: 'Güvenilirlik testi', sub: 'Yöntem geçmişi tahmin edebiliyor mu' },
   { key: 'novelty', name: 'Yenilik kontrolü', sub: 'Aday zaten denenmiş mi (literatür ve klinik çalışma kayıtları)' },
   { key: 'report', name: 'Rapor', sub: 'Keşif özeti ve tek dosyalık rapor' },
@@ -86,10 +91,37 @@ export const HARM: Record<string, [string, string]> = {
   yok: ['bilinmiyor', 'Hastalıkla doğrudan ilişki raporu yok'],
 };
 export const METRIC_NAME: Record<string, string> = {
-  method: 'Yöntem',
+  method: 'Literatür köprüsü (temel yöntem)',
+  fused: 'Kullanılan sıralama',
+  rrf: 'Kanal birleştirme',
   lit_only: 'Yalnız literatür',
   mech_only: 'Yalnız mekanizma',
+  direct: 'Doğrudan anılma',
+  recent: 'Son 5 yıl ilgisi',
+  genetic: 'Genetik ilişki',
+  biology: 'Biyolojik kanıt',
+  network: 'Protein ağı yakınlığı',
   frequency: 'Sıklık (karşılaştırma)',
+};
+/** Benchmark'taki yöntem adları. */
+export const METHOD_NAME: Record<string, string> = {
+  base: 'Temel yöntem',
+  rrf_core: 'Kanal birleştirme (literatür)',
+  rrf_all: 'Kanal birleştirme (tüm kanallar)',
+  logistic: 'Öğrenen birleştirme',
+  frequency: 'Sıklık sıralaması',
+  random: 'Rastgele',
+};
+export const FUSION_NAME: Record<string, string> = {
+  base: 'temel yöntem puanı',
+  rrf: 'kanal birleştirme (sıra tabanlı)',
+  logistic: 'öğrenen birleştirme',
+};
+export const CONFIDENCE: Record<string, [string, string]> = {
+  yüksek: ['tutarlı', 'Geriye dönük testte yöntem rastgeleden ve basit sıklık sıralamasından açıkça iyi'],
+  orta: ['karışık', 'Yöntem rastgeleden iyi ama farkı sınırlı ya da örnek az'],
+  düşük: ['ters', 'Bu hastalıkta yöntem basit sıralamalardan belirgin biçimde iyi değil; liste temkinle okunmalı'],
+  ölçülemedi: ['bilinmiyor', 'Geriye dönük test yapılamadı ya da doğrulanan ilaç çok az'],
 };
 export const PNAME: Record<string, string> = {
   w_mech: 'mekanizma ağırlığı',

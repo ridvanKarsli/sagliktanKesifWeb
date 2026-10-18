@@ -53,7 +53,8 @@ export function BacktestTab({ diseaseKey }: { diseaseKey: string }) {
                   </div>
                 );
               }
-              const m = r.metrics.method;
+              const used = r.metrics.fused ? 'fused' : 'method';
+              const m = r.metrics[used];
               const f = r.metrics.frequency;
               const beats =
                 !!m &&
@@ -70,11 +71,13 @@ export function BacktestTab({ diseaseKey }: { diseaseKey: string }) {
                   </div>
                   <div className="meta">
                     {sub} · rastgele beklenen isabet@10: {r.random_expected_hits?.at_10}
+                    {r.random_expected_ap != null ? ` · rastgele AP: ${r.random_expected_ap}` : ''}
                   </div>
                   <table>
                     <thead>
                       <tr>
                         <th>Sıralama</th>
+                        <th title="Ortalama kesinlik: pozitiflerin listede ne kadar üstte olduğu">AP</th>
                         <th>AUC</th>
                         <th>İlk 10</th>
                         <th>İlk 25</th>
@@ -83,8 +86,9 @@ export function BacktestTab({ diseaseKey }: { diseaseKey: string }) {
                     </thead>
                     <tbody>
                       {Object.entries(r.metrics).map(([key, v]) => (
-                        <tr key={key} className={key === 'method' ? 'method' : ''}>
+                        <tr key={key} className={key === used ? 'method' : ''}>
                           <td>{METRIC_NAME[key] || key}</td>
+                          <td>{v.ap ?? '–'}</td>
                           <td>{v.auc}</td>
                           <td>{v.hits_at_10}</td>
                           <td>{v.hits_at_25}</td>
@@ -96,7 +100,7 @@ export function BacktestTab({ diseaseKey }: { diseaseKey: string }) {
                   {m && f && (
                     <div className={`bt-verdict ${beats ? 'ok' : 'no'}`}>
                       {beats
-                        ? `Yöntem, basit sıklık sıralamasını geçiyor (ilk 10'da ${m.hits_at_10} / ${f.hits_at_10}).`
+                        ? `Kullanılan sıralama, basit sıklık sıralamasını geçiyor (ilk 10'da ${m.hits_at_10} / ${f.hits_at_10}).`
                         : tie
                           ? 'Yöntem ve sıklık sıralaması başa baş.'
                           : 'Yöntem bu ölçütte sıklık sıralamasının gerisinde.'}
