@@ -30,9 +30,28 @@ export interface DiseaseStatus {
   has_backtest: boolean;
   has_report: boolean;
   has_discovery: boolean;
+  has_evidence?: boolean;
+  confidence?: MethodConfidence;
   last_job?: LastJob | null;
   steps: Partial<Record<string, StepInfo>>;
   settings: Record<string, number | boolean>;
+}
+
+export type ConfidenceGrade = 'yüksek' | 'orta' | 'düşük' | 'ölçülemedi';
+
+/** Bu hastalıkta yönteme ne kadar güvenilebileceği; geriye dönük ölçümden kural tabanlı türetilir. */
+export interface MethodConfidence {
+  grade: ConfidenceGrade;
+  reasons: string[];
+  numbers: {
+    ap?: number;
+    random_ap?: number;
+    frequency_ap?: number | null;
+    lift_over_random?: number | null;
+    n_positives?: number;
+    hits_at_25?: number | null;
+    source?: string;
+  };
 }
 
 export interface Disease {
@@ -79,6 +98,59 @@ export interface CompareRow {
   enrichment?: number | null;
   trials_at_10?: string | null;
   top_classes?: string[];
+  confidence?: ConfidenceGrade;
+}
+
+export interface CiValue {
+  mean: number | null;
+  lo: number | null;
+  hi: number | null;
+  n: number;
+}
+
+export interface ScorecardEntry {
+  ap: CiValue;
+  hits_at_25?: CiValue;
+  vs_base?: CiValue;
+  wins?: number;
+  losses?: number;
+}
+
+export interface FusionDecision {
+  method: 'base' | 'rrf' | 'logistic';
+  verdict?: string;
+  reason?: string;
+  channels?: string[];
+  measured_as?: string;
+  origin?: string;
+  weights?: { feature: string; weight: number }[];
+  hold_out?: { mean_base_ap: number | null; mean_chosen_ap: number | null; confirmed: boolean };
+}
+
+export interface BenchmarkDiseaseRow {
+  scheme?: string | null;
+  hold_out: boolean;
+  mean_base_ap?: number | null;
+  mean_chosen_ap?: number | null;
+  mean_random_ap?: number | null;
+  mean_frequency_ap?: number | null;
+}
+
+export interface BenchmarkResult {
+  at: string;
+  cutoffs: number[];
+  n_groups: number;
+  fit_diseases: string[];
+  hold_out: string[];
+  methods: string[];
+  scorecard: Record<string, ScorecardEntry>;
+  decision: FusionDecision;
+  diseases: Record<string, BenchmarkDiseaseRow>;
+}
+
+export interface BenchmarkResponse {
+  benchmark: BenchmarkResult | null;
+  decision: FusionDecision | null;
 }
 
 export interface ServiceCheck {

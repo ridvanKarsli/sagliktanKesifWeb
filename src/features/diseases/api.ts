@@ -1,5 +1,14 @@
 import { api } from '@/shared/api/client';
-import type { CompareRow, Disease, DiseaseCreate, DiseaseDetail, Estimate, ServiceCheck, Settings } from '@/entities';
+import type {
+  BenchmarkResponse,
+  CompareRow,
+  Disease,
+  DiseaseCreate,
+  DiseaseDetail,
+  Estimate,
+  ServiceCheck,
+  Settings,
+} from '@/entities';
 
 export const diseasesApi = {
   list: () => api.get<DiseaseDetail[]>('/diseases'),
@@ -9,6 +18,7 @@ export const diseasesApi = {
     api.delete<{ removed: string; purged: string[] }>(`/diseases/${encodeURIComponent(key)}`, { purge }),
   estimate: (key: string) => api.get<Estimate>(`/diseases/${encodeURIComponent(key)}/estimate`),
   compare: () => api.get<CompareRow[]>('/compare'),
+  benchmark: () => api.get<BenchmarkResponse>('/benchmark'),
   services: () => api.get<{ ok: boolean; checks: ServiceCheck[] }>('/health/services'),
   settings: (key: string) => api.get<Settings>(`/diseases/${encodeURIComponent(key)}/settings`),
   rerank: (key: string, params: Record<string, unknown>, cutoff: number | null) =>

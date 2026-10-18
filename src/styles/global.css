@@ -1757,3 +1757,50 @@ dialog.open-dlg {
   padding: 12px 16px;
   margin-bottom: 14px;
 }
+
+/* yöntem güveni ve yöntem karnesi */
+.confbox {
+  background: var(--surface-2);
+  border-radius: var(--radius-s);
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+.confbox.low {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn);
+}
+.confbox-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.confbox ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.confbox li {
+  margin: 2px 0;
+}
+.decision {
+  background: var(--surface-2);
+  border-radius: var(--radius-s);
+  padding: 10px 14px;
+  margin: 8px 0 12px;
+  font-size: 13.5px;
+}
+.decision p {
+  margin: 6px 0 0;
+  color: var(--text-2);
+}
+.indic ul.indep {
+  margin: 0;
+  padding-left: 18px;
+}
+.indic b.inline {
+  display: inline;
+  color: var(--text);
+  font-size: inherit;
+  margin: 0;
+}

@@ -12,6 +12,7 @@ import { BridgesTab } from '@/features/candidates/BridgesTab';
 import { BacktestTab } from '@/features/candidates/BacktestTab';
 import { DiscoveryTab } from '@/features/discovery/DiscoveryTab';
 import { PlainSummary } from './PlainSummary';
+import { ConfidenceBox } from './Confidence';
 import { useCan } from '@/features/auth/useSession';
 import { Button, Tabs, useToast, PageError } from '@/shared/ui';
 import { ALL_STEPS, STEPS } from '@/shared/lib/labels';
@@ -145,6 +146,7 @@ export function DiseasePage() {
 
       {!s.has_corpus && !activeRun && <EstimateBox d={d} />}
       {s.has_candidates && <PlainSummary d={d} />}
+      {s.has_backtest && <ConfidenceBox c={s.confidence} />}
       <ProgressLine d={d} />
       {shownRun && <JobBox run={shownRun} diseaseKey={key} />}
 

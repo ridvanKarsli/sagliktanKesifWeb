@@ -11,6 +11,8 @@ import { Button, Spinner, PageError } from '@/shared/ui';
 import { errorMessage } from '@/shared/api/errors';
 import { isActiveRun, type DiseaseDetail, type ServiceCheck } from '@/entities';
 import { useCallback } from 'react';
+import { ConfidenceBadge } from './Confidence';
+import { MethodScorecard } from './MethodScorecard';
 
 function badgeFor(d: DiseaseDetail): [string, string] {
   if (d.active_run?.status === 'queued') return ['running', `Sırada (${d.active_run.queue_position}.)`];
@@ -66,11 +68,17 @@ export function HomePage() {
               <div className="sub">
                 {s.fetched_at ? 'Son indirme ' + s.fetched_at.slice(0, 10) : 'Analizi başlatmak için tıklayın'}
               </div>
+              {s.has_backtest && s.confidence && (
+                <div>
+                  <ConfidenceBadge grade={s.confidence.grade} reasons={s.confidence.reasons} />
+                </div>
+              )}
             </button>
           );
         })}
       </div>
       <CompareSection />
+      <MethodScorecard diseases={diseases.data} />
       {diseases.data && diseases.data.length === 0 && (
         <div className="callout">
           <h2>Henüz hastalık yok</h2>
@@ -131,7 +139,7 @@ function ServicesCheck() {
           ? res.ok
             ? 'Tüm kaynaklar erişilebilir ve beklenen biçimde yanıt veriyor.'
             : 'En az bir kaynak sorunlu; analiz bu adımda eksik kalabilir (ayrıntı için işaretin üzerine gelin).'
-          : 'Makale, gen, ilaç ve klinik çalışma kaynaklarına küçük birer istek atılır; bir analize başlamadan önce önerilir.'}
+          : 'Makale, gen, ilaç, klinik çalışma, genetik ilişki ve protein ağı kaynaklarına küçük birer istek atılır; bir analize başlamadan önce önerilir.'}
       </span>
       <div className="svc-list" style={{ flexBasis: '100%', display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         {check.error && (
@@ -174,6 +182,7 @@ function CompareSection() {
               <th title="Rastgele beklenenin kaç katı">Zenginleşme</th>
               <th title="Geriye dönük test, klinik çalışma ölçütü, ilk 10: yöntem / sıklık">Test @10</th>
               <th>Öne çıkan hedefler</th>
+              <th title="Geriye dönük ölçüme göre bu hastalıkta yönteme güven">Güven</th>
             </tr>
           </thead>
           <tbody>
@@ -188,6 +197,7 @@ function CompareSection() {
                 <td>{r.enrichment != null ? `${r.enrichment}×` : '–'}</td>
                 <td>{r.trials_at_10 ?? '–'}</td>
                 <td>{(r.top_classes || []).join(', ')}</td>
+                <td>{r.confidence ?? '–'}</td>
               </tr>
             ))}
           </tbody>
