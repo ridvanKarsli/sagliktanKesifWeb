@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { diseasesApi } from './api';
 import { FUSION_NAME, METHOD_NAME } from '@/shared/lib/labels';
 import { fmtDateTime } from '@/shared/lib/format';
-import type { CiValue, DiseaseDetail } from '@/entities';
+import type { CiValue, DiseaseDetail, Gate } from '@/entities';
 
 const pct = (v: number | null | undefined) => (v == null ? '–' : v.toFixed(3));
 const ci = (c?: CiValue) => (c && c.mean != null ? `${pct(c.mean)}  [${pct(c.lo)} – ${pct(c.hi)}]` : '–');
@@ -51,7 +51,7 @@ export function MethodScorecard({ diseases }: { diseases?: DiseaseDetail[] }) {
                 </tr>
               </thead>
               <tbody>
-                {[...bm.methods, 'frequency', 'random'].map((m) => {
+                {[...bm.methods, 'frequency', 'ltc', 'network', 'random'].map((m) => {
                   const r = bm.scorecard[m];
                   if (!r) return null;
                   return (
@@ -67,6 +67,7 @@ export function MethodScorecard({ diseases }: { diseases?: DiseaseDetail[] }) {
               </tbody>
             </table>
           </div>
+          {bm.gate_1 && <GateBox gate={bm.gate_1} />}
           <p className="hint">
             {bm.n_groups} test ({bm.fit_diseases.length} hastalık × {bm.cutoffs.join(', ')} kesitleri) ·{' '}
             {fmtDateTime(bm.at)}
@@ -111,5 +112,41 @@ export function MethodScorecard({ diseases }: { diseases?: DiseaseDetail[] }) {
         </>
       )}
     </section>
+  );
+}
+
+/** Faz 1 kapısı: üç koşulun durumu. */
+function GateBox({ gate }: { gate: Gate }) {
+  const c = gate.checks;
+  const le = c.label_error;
+  const rows: [boolean, string][] = [
+    [c.diseases.ok, `Ölçülen hastalık: ${c.diseases.value} / ${c.diseases.target}`],
+    [
+      le.ok,
+      le.value != null
+        ? `Etiket hatası: %${(le.value * 100).toFixed(1)} (${le.n_checked} satır, ${le.audited_diseases} hastalık denetlendi; hedef < %${((le.target || 0) * 100).toFixed(0)})`
+        : 'Etiket hatası: henüz denetlenmedi (kesif label-audit)',
+    ],
+    ...Object.entries(c.beats_baselines.baselines || {}).map(
+      ([b, v]) =>
+        [v.ok, `${METHOD_NAME[b] || b} taban çizgisine göre fark ${pct(v.mean)} [${pct(v.lo)} – ${pct(v.hi)}]`] as [
+          boolean,
+          string,
+        ],
+    ),
+  ];
+  return (
+    <div className={`confbox ${gate.passed ? '' : 'low'}`}>
+      <div className="confbox-head">
+        <b>Kapı 1 {gate.passed ? 'geçildi' : 'henüz geçilmedi'}</b>
+      </div>
+      <ul>
+        {rows.map(([ok, text]) => (
+          <li key={text}>
+            {ok ? '✓' : '✗'} {text}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

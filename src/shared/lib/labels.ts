@@ -78,6 +78,7 @@ export const SCHEME: Record<string, [string, string]> = {
   mentions: ['Literatürde ilk anılma', 'gürültülü ölçüt; yalnızca karşılaştırma için'],
   therapy: ['Tedavi makalesine girme', 'kesitten sonra tedavi odaklı makalelerde ilk kez görülen ilaçlar'],
   trials: ['Klinik çalışmaya girme', 'kesitten sonra bu hastalık için ilk klinik çalışmaya giren ilaçlar'],
+  trials_late: ['Faz 2+ çalışmaya girme', 'daha katı ikinci etiket: yalnızca faz 2 ve üstü çalışmalar'],
   trials_novel: [
     'Hiç anılmadan klinik çalışmaya girme',
     'en katı ölçüt: kesit öncesi literatürde hiç yoktu; örnek sayısı azdır',
@@ -102,6 +103,7 @@ export const METRIC_NAME: Record<string, string> = {
   biology: 'Biyolojik kanıt',
   network: 'Protein ağı yakınlığı',
   frequency: 'Sıklık (karşılaştırma)',
+  ltc: 'Bağlantı terimi sayısı (taban çizgisi)',
 };
 /** Benchmark'taki yöntem adları. */
 export const METHOD_NAME: Record<string, string> = {
@@ -110,6 +112,8 @@ export const METHOD_NAME: Record<string, string> = {
   rrf_all: 'Kanal birleştirme (tüm kanallar)',
   logistic: 'Öğrenen birleştirme',
   frequency: 'Sıklık sıralaması',
+  ltc: 'Bağlantı terimi sayısı',
+  network: 'Yalnız protein ağı',
   random: 'Rastgele',
 };
 export const FUSION_NAME: Record<string, string> = {

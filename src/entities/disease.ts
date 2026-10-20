@@ -136,6 +136,22 @@ export interface BenchmarkDiseaseRow {
   mean_frequency_ap?: number | null;
 }
 
+export interface GateCheck {
+  ok: boolean;
+  value?: number | null;
+  target?: number;
+  n_checked?: number;
+  audited_diseases?: number;
+  method?: string;
+  baselines?: Record<string, CiValue & { ok: boolean }>;
+}
+
+export interface Gate {
+  passed: boolean;
+  missing: string[];
+  checks: { diseases: GateCheck; label_error: GateCheck; beats_baselines: GateCheck };
+}
+
 export interface BenchmarkResult {
   at: string;
   cutoffs: number[];
@@ -145,6 +161,8 @@ export interface BenchmarkResult {
   methods: string[];
   scorecard: Record<string, ScorecardEntry>;
   decision: FusionDecision;
+  gate_1?: Gate;
+  secondary_scheme?: string | null;
   diseases: Record<string, BenchmarkDiseaseRow>;
 }
 
