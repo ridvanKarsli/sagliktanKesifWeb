@@ -153,7 +153,12 @@ export interface GateCheck {
 export interface Gate {
   passed: boolean;
   missing: string[];
-  checks: { diseases: GateCheck; label_error: GateCheck; beats_baselines: GateCheck };
+  checks: {
+    diseases: GateCheck;
+    label_error: GateCheck;
+    beats_baselines: GateCheck;
+    final_confirmation?: GateCheck & { diseases?: string[]; mean?: number | null; lo?: number | null; hi?: number | null; note?: string | null };
+  };
 }
 
 export interface BenchmarkResult {

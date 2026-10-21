@@ -137,6 +137,14 @@ function GateBox({ gate }: { gate: Gate }) {
         ],
     ),
   ];
+  const fc = c.final_confirmation;
+  if (fc)
+    rows.push([
+      fc.ok,
+      fc.mean != null
+        ? `Kesin doğrulama (${(fc.diseases || []).join(', ')}; tasarımda hiç bakılmamış hastalıklar): sıklığa göre fark ${pct(fc.mean)} [${pct(fc.lo)} – ${pct(fc.hi)}]`
+        : `Kesin doğrulama: ${fc.note || 'henüz ölçülmedi'}`,
+    ]);
   return (
     <div className={`confbox ${gate.passed ? '' : 'low'}`}>
       <div className="confbox-head">

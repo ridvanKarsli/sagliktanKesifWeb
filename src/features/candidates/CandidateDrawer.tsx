@@ -29,6 +29,7 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
   const geneticTarget = extraStr('genetic_target');
   const networkTarget = extraStr('network_target');
   const biology = extraNum('biology_score');
+  const accel = extraNum('accel_score');
   const links = ev.data || [];
   const warnings: string[] = [];
   if (num(row.lit_score) === 0 && num(row.mech_score) > 0)
@@ -86,6 +87,14 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
             <span>
               {num(row.score).toFixed(4)} · {FUSION_NAME[fusion] || fusion}
               {nChannels != null ? `, ${nChannels} kanalda kanıt` : ''}
+            </span>
+          </>
+        )}
+        {accel != null && accel > 0 && (
+          <>
+            <b>Kanıt ivmesi</b>
+            <span title="(1 + son 5 yıldaki anılma) / √(1 + önceki anılma): ilginin son yıllarda ne kadar hızlı arttığı">
+              {accel.toFixed(2)} · hastalık literatüründe son yıllarda yükselen ilgi
             </span>
           </>
         )}
