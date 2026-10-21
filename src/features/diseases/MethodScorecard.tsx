@@ -124,7 +124,9 @@ function GateBox({ gate }: { gate: Gate }) {
     [
       le.ok,
       le.value != null
-        ? `Etiket hatası: %${(le.value * 100).toFixed(1)} (${le.n_checked} satır, ${le.audited_diseases} hastalık denetlendi; hedef < %${((le.target || 0) * 100).toFixed(0)})`
+        ? `Ölçüme giren etiketlerde kalan hata: %${(le.value * 100).toFixed(1)} (hedef < %${((le.target || 0) * 100).toFixed(0)}) · ` +
+          `denetlenen ${le.n_checked} / ${le.pool ?? '–'} satır (kapsama %${((le.coverage ?? 0) * 100).toFixed(0)}), ` +
+          `kuralların ham hatası %${((le.raw_error ?? 0) * 100).toFixed(1)}; yanlış bulunan ${le.n_wrong ?? 0} ilaç ölçüm dışında`
         : 'Etiket hatası: henüz denetlenmedi (kesif label-audit)',
     ],
     ...Object.entries(c.beats_baselines.baselines || {}).map(

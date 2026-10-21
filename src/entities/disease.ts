@@ -141,6 +141,10 @@ export interface GateCheck {
   value?: number | null;
   target?: number;
   n_checked?: number;
+  n_wrong?: number;
+  raw_error?: number | null;
+  coverage?: number;
+  pool?: number;
   audited_diseases?: number;
   method?: string;
   baselines?: Record<string, CiValue & { ok: boolean }>;
