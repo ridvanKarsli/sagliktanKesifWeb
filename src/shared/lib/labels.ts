@@ -103,6 +103,7 @@ export const METRIC_NAME: Record<string, string> = {
   genetic: 'Genetik ilişki',
   biology: 'Biyolojik kanıt',
   network: 'Protein ağı yakınlığı',
+  similar: 'Benzer hastalıklarda denenmiş',
   frequency: 'Sıklık (karşılaştırma)',
   ltc: 'Bağlantı terimi sayısı (taban çizgisi)',
 };
@@ -113,6 +114,7 @@ export const METHOD_NAME: Record<string, string> = {
   rrf_all: 'Kanal birleştirme (tüm kanallar)',
   rrf_ivme: 'Kanıt ivmesi + literatür köprüsü',
   stack: 'Popülerlik üstüne bilgi (öğrenen model + popülerlik)',
+  stack_komsu: 'Öğrenen model + benzer hastalık kanıtı + popülerlik',
   logistic: 'Öğrenen birleştirme',
   frequency: 'Sıklık sıralaması',
   ltc: 'Bağlantı terimi sayısı',

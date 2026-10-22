@@ -30,6 +30,7 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
   const networkTarget = extraStr('network_target');
   const biology = extraNum('biology_score');
   const accel = extraNum('accel_score');
+  const similarFrom = extraStr('similar_from');
   const links = ev.data || [];
   const warnings: string[] = [];
   if (num(row.lit_score) === 0 && num(row.mech_score) > 0)
@@ -95,6 +96,14 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
             <b>Kanıt ivmesi</b>
             <span title="(1 + son 5 yıldaki anılma) / √(1 + önceki anılma): ilginin son yıllarda ne kadar hızlı arttığı">
               {accel.toFixed(2)} · hastalık literatüründe son yıllarda yükselen ilgi
+            </span>
+          </>
+        )}
+        {similarFrom && (
+          <>
+            <b>Benzer hastalıklar</b>
+            <span title="Bu ilacın daha önce klinik çalışmaya girdiği, bu hastalığa en benzer hastalıklar (benzerlik: iki hastalıkta denenmiş ilaçların örtüşmesi)">
+              {similarFrom}
             </span>
           </>
         )}

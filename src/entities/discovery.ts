@@ -10,6 +10,7 @@ export interface DiscoveryCandidate {
   mechanism?: string;
   genetic_target?: string;
   network_target?: string;
+  similar_from?: string;
   justification: string;
 }
 
