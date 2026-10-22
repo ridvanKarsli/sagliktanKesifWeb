@@ -112,6 +112,7 @@ export const METHOD_NAME: Record<string, string> = {
   rrf_core: 'Kanal birleştirme (literatür)',
   rrf_all: 'Kanal birleştirme (tüm kanallar)',
   rrf_ivme: 'Kanıt ivmesi + literatür köprüsü',
+  stack: 'Popülerlik üstüne bilgi (öğrenen model + popülerlik)',
   logistic: 'Öğrenen birleştirme',
   frequency: 'Sıklık sıralaması',
   ltc: 'Bağlantı terimi sayısı',
@@ -122,6 +123,7 @@ export const FUSION_NAME: Record<string, string> = {
   base: 'temel yöntem puanı',
   rrf: 'kanal birleştirme (sıra tabanlı)',
   logistic: 'öğrenen birleştirme',
+  stack: 'öğrenen model + popülerlik (sıra birleştirme)',
 };
 export const CONFIDENCE: Record<string, [string, string]> = {
   yüksek: ['tutarlı', 'Geriye dönük testte yöntem rastgeleden ve basit sıklık sıralamasından açıkça iyi'],
