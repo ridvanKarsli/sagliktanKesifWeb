@@ -31,6 +31,7 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
   const biology = extraNum('biology_score');
   const accel = extraNum('accel_score');
   const similarFrom = extraStr('similar_from');
+  const p5 = extraNum('p_trial_5y');
   const links = ev.data || [];
   const warnings: string[] = [];
   if (num(row.lit_score) === 0 && num(row.mech_score) > 0)
@@ -96,6 +97,14 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
             <b>Kanıt ivmesi</b>
             <span title="(1 + son 5 yıldaki anılma) / √(1 + önceki anılma): ilginin son yıllarda ne kadar hızlı arttığı">
               {accel.toFixed(2)} · hastalık literatüründe son yıllarda yükselen ilgi
+            </span>
+          </>
+        )}
+        {p5 != null && (
+          <>
+            <b>5 yıl olasılığı</b>
+            <span title="Geçmiş kesitlerde bu sıradaki yeni adayların 5 yıl içinde hastalıkta klinik çalışmaya girme oranı (hastalık dışarıda bırakılarak ölçülmüş kalibrasyon)">
+              %{(100 * p5).toFixed(1)} · bu hastalıkta 5 yıl içinde klinik çalışmaya girme
             </span>
           </>
         )}
