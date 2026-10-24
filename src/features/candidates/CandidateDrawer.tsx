@@ -2,7 +2,7 @@ import { useEvidence, useIndications } from './hooks';
 import { HarmTag } from './HarmTag';
 import { Drawer, Tag } from '@/shared/ui';
 import { DIR_TITLE, DURUM, FUSION_NAME, HARM, KIND, STATUS, TR } from '@/shared/lib/labels';
-import { COMPOUND, PUBMED, num } from '@/shared/lib/format';
+import { COMPOUND, PUBMED, TRIAL, num } from '@/shared/lib/format';
 import { errorMessage } from '@/shared/api/errors';
 import type { Candidate, DiseaseDetail, EvidenceLink } from '@/entities';
 
@@ -15,6 +15,58 @@ const Pm = ({ list }: { list?: string[] }) => (
     ))}
   </span>
 );
+
+interface ChainStep {
+  tur: string;
+  metin: string;
+  kaynaklar: { tip: 'pmid' | 'nct'; id: string }[];
+}
+interface Chain {
+  katkilar: { kanal: string; ad: string; pay: number }[];
+  adimlar: ChainStep[];
+}
+
+const parseChain = (raw: string): Chain | null => {
+  if (!raw) return null;
+  try {
+    const c = JSON.parse(raw) as Chain;
+    return Array.isArray(c.adimlar) ? c : null;
+  } catch {
+    return null;
+  }
+};
+
+function WhyBox({ chain }: { chain: Chain }) {
+  return (
+    <div className="indic">
+      <b>Neden bu ilaç?</b>
+      {chain.katkilar.length > 0 && (
+        <span className="sub">
+          Sıralamayı belirleyen kanallar:{' '}
+          {chain.katkilar.map((k) => `${k.ad} %${Math.round(100 * k.pay)}`).join(' · ')}
+        </span>
+      )}
+      <ol className="indep">
+        {chain.adimlar.map((a, i) => (
+          <li key={i}>
+            <b className="inline">{a.tur}:</b> {a.metin}{' '}
+            {a.kaynaklar.map((k) => (
+              <a
+                key={k.tip + k.id}
+                href={k.tip === 'nct' ? TRIAL(k.id) : PUBMED(k.id)}
+                target="_blank"
+                rel="noreferrer"
+                style={{ marginRight: 6 }}
+              >
+                {k.id}
+              </a>
+            ))}
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
 
 export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Candidate | null; onClose: () => void }) {
   const ev = useEvidence(d.key, row?.chemical_id ?? null);
@@ -32,6 +84,7 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
   const accel = extraNum('accel_score');
   const similarFrom = extraStr('similar_from');
   const p5 = extraNum('p_trial_5y');
+  const chain = parseChain(extraStr('kanit_zinciri'));
   const links = ev.data || [];
   const warnings: string[] = [];
   if (num(row.lit_score) === 0 && num(row.mech_score) > 0)
@@ -148,6 +201,7 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
           {row.n_direct_a} makale · {directPmids ? <Pm list={directPmids.split(';')} /> : 'yok'}
         </span>
       </div>
+      {chain && chain.adimlar.length > 0 && <WhyBox chain={chain} />}
       {warnings.length > 0 && (
         <div className="warnbox">
           <b>Dikkat</b>

@@ -9,4 +9,5 @@ export const num = (v: unknown): number => {
   return Number.isFinite(n) ? n : 0;
 };
 export const PUBMED = (p: string) => `https://pubmed.ncbi.nlm.nih.gov/${p}/`;
+export const TRIAL = (nct: string) => `https://clinicaltrials.gov/study/${nct}`;
 export const COMPOUND = (id: string) => `https://www.ebi.ac.uk/chembl/compound_report_card/${id}/`;
