@@ -79,7 +79,9 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
   const methodScore = extraNum('method_score') ?? num(row.score);
   const nChannels = extraNum('n_channels');
   const geneticTarget = extraStr('genetic_target');
-  const networkTarget = extraStr('network_target');
+  const networkRaw = extraStr('network_target');
+  // z < 2 anlamlı yakınlık sayılmaz (kanıt zinciriyle aynı eşik)
+  const networkTarget = Number(networkRaw.split('z=')[1] || 0) >= 2 ? networkRaw : '';
   const biology = extraNum('biology_score');
   const accel = extraNum('accel_score');
   const similarFrom = extraStr('similar_from');
