@@ -36,33 +36,82 @@ const parseChain = (raw: string): Chain | null => {
   }
 };
 
+interface StoppedTrial {
+  tur: 'efficacy' | 'safety';
+  mesh: string;
+  hastalik: string;
+  yil: number;
+  nct: string;
+  ayni: boolean;
+  benzerlik: number | null;
+}
+
+const parseStopped = (raw: string): StoppedTrial[] => {
+  if (!raw) return [];
+  try {
+    const v = JSON.parse(raw) as StoppedTrial[];
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
+};
+
+const STOP_REASON: Record<string, string> = { efficacy: 'etkisizlik', safety: 'güvenlik' };
+
+function StoppedBox({ items }: { items: StoppedTrial[] }) {
+  return (
+    <div className="warnbox">
+      <b>Erken sonlandırılan çalışmalar</b>
+      <ul>
+        {items.map((s) => (
+          <li key={s.tur + s.mesh}>
+            {s.ayni ? 'Bu hastalıkta' : s.hastalik}
+            {!s.ayni && s.benzerlik ? ' (benzer hastalık)' : ''}, {s.yil}: {STOP_REASON[s.tur] || s.tur} nedeniyle
+            durduruldu{' '}
+            {s.nct && (
+              <a href={TRIAL(s.nct)} target="_blank" rel="noreferrer">
+                {s.nct}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+      <span className="sub">
+        Ölçümlerimizde bu bilgi ilacın klinik çalışmaya girip girmeyeceğini öngörmedi; sıralamaya etkisi yoktur.
+        Etkinlik açısından dikkate alınmalı.
+      </span>
+    </div>
+  );
+}
+
 function WhyBox({ chain }: { chain: Chain }) {
   return (
     <div className="indic">
       <b>Neden bu ilaç?</b>
       {chain.katkilar.length > 0 && (
         <span className="sub">
-          Sıralamayı belirleyen kanallar:{' '}
-          {chain.katkilar.map((k) => `${k.ad} %${Math.round(100 * k.pay)}`).join(' · ')}
+          Sıralamayı belirleyen kanallar: {chain.katkilar.map((k) => `${k.ad} %${Math.round(100 * k.pay)}`).join(' · ')}
         </span>
       )}
       <ol className="indep">
-        {chain.adimlar.map((a, i) => (
-          <li key={i}>
-            <b className="inline">{a.tur}:</b> {a.metin}{' '}
-            {a.kaynaklar.map((k) => (
-              <a
-                key={k.tip + k.id}
-                href={k.tip === 'nct' ? TRIAL(k.id) : PUBMED(k.id)}
-                target="_blank"
-                rel="noreferrer"
-                style={{ marginRight: 6 }}
-              >
-                {k.id}
-              </a>
-            ))}
-          </li>
-        ))}
+        {chain.adimlar
+          .filter((a) => a.tur !== 'uyarı')
+          .map((a, i) => (
+            <li key={i}>
+              <b className="inline">{a.tur}:</b> {a.metin}{' '}
+              {a.kaynaklar.map((k) => (
+                <a
+                  key={k.tip + k.id}
+                  href={k.tip === 'nct' ? TRIAL(k.id) : PUBMED(k.id)}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ marginRight: 6 }}
+                >
+                  {k.id}
+                </a>
+              ))}
+            </li>
+          ))}
       </ol>
     </div>
   );
@@ -87,6 +136,7 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
   const similarFrom = extraStr('similar_from');
   const p5 = extraNum('p_trial_5y');
   const chain = parseChain(extraStr('kanit_zinciri'));
+  const stopped = parseStopped(extraStr('stopped_trials'));
   const links = ev.data || [];
   const warnings: string[] = [];
   if (num(row.lit_score) === 0 && num(row.mech_score) > 0)
@@ -204,6 +254,7 @@ export function CandidateDrawer({ d, row, onClose }: { d: DiseaseDetail; row: Ca
         </span>
       </div>
       {chain && chain.adimlar.length > 0 && <WhyBox chain={chain} />}
+      {stopped.length > 0 && <StoppedBox items={stopped} />}
       {warnings.length > 0 && (
         <div className="warnbox">
           <b>Dikkat</b>

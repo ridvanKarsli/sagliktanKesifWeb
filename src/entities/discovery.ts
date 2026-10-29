@@ -11,6 +11,7 @@ export interface DiscoveryCandidate {
   genetic_target?: string;
   network_target?: string;
   similar_from?: string;
+  stopped_trials?: string;
   p_trial_5y?: number | null;
   justification: string;
 }
