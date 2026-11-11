@@ -1,7 +1,21 @@
 # Sağlıktan Keşif — Frontend
 
-Literatür tabanlı ilaç yeniden konumlandırma platformunun arayüzü. React 18 + TypeScript (strict) + Vite. Backend
-(Sağlıktan Keşif — Backend reposu) ayrı bir projedir; bu arayüz onunla yalnızca REST API (`/api/v1`) üzerinden konuşur.
+Bilimsel makaleleri ve klinik çalışma kayıtlarını analiz ederek, bugün kullanılan ilaçlar arasından belirli bir
+hastalıkta henüz denenmemiş ama umut vadeden adayları bulan platformun arayüzü.
+
+React 18 + TypeScript (strict) + Vite. Sunucu tarafı ayrı bir repodadır (Sağlıktan Keşif — Backend); bu arayüz onunla
+yalnızca REST API (`/api/v1`) üzerinden konuşur.
+
+## Arayüzde neler var
+
+- **Ana sayfa:** hastalık kartları, hastalıklar arası karşılaştırma tablosu, veri kaynaklarının durumu.
+- **Hastalık sayfası:** aday ilaç tablosu (süzgeç ve sıralama), keşif özeti, bilinen tedaviler, köprü genler,
+  yöntemin o hastalıktaki güvenilirliği.
+- **Aday ayrıntısı:** "Neden bu ilaç?" kanıt zinciri (kaynak makale ve klinik çalışma bağlantılarıyla), 5 yıl içinde
+  klinik çalışmaya girme olasılığı, benzer hastalıklardaki çalışmalar, erken sonlandırılmış çalışma uyarıları,
+  ilacın bugünkü kullanım alanları.
+- **Analiz işleri:** analiz başlatma, canlı ilerleme (sayfa yenilemeden), parametre ve adım ayarları.
+- **Yönetim:** kullanıcılar ve roller (yalnız yönetici).
 
 ## Çalıştırma
 
@@ -76,3 +90,10 @@ Düğmeler role göre gizlenir; asıl denetim sunucudadır.
 
 `npm run lint` ve `npm run build` (TypeScript strict) temiz olmalıdır; CI (`.github/workflows/ci.yml`) her push'ta ikisini
 ve Docker imaj derlemesini çalıştırır.
+
+## Katkı
+
+- `main` dalına doğrudan gönderim yapılmaz; her iş ayrı bir dalda ve pull request ile.
+- PR'dan önce `npm run lint` ve `npm run build` temiz olmalı.
+- API şeması değişirse önce backend, sonra `src/entities/` içindeki tipler güncellenir.
+
